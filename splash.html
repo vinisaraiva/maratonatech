@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CoWorking - Splash Screen</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/loading.css">
+
+</head>
+<body>
+    <div class="d-flex flex-column justify-content-center align-items-center vh-100">
+        <img src="assets/logo1.png" alt="Logo" class="mb-4"><p></p>
+        <h3 class="text-center my-5">Centro de Reorganização de Pequenas<br> e Médias Empresas</h3><p></p>
+        <div class="lds-dual-ring"></div>
+    </div>
+    
+    <script>
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 6000);
+    </script>
+</body>
+</html>
