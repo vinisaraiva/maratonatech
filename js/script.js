@@ -8,12 +8,22 @@ function carregarDados(chave) {
     return JSON.parse(localStorage.getItem(chave)) || [];
 }
 
-// Função para inicializar o Datepicker
+// Função para inicializar o calendário
 function inicializarCalendario() {
-    $("#datepicker").datepicker({
-        onSelect: function(dateText) {
-            exibirSalasDisponiveis(dateText);
-        }
+    $('#calendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        selectable: true,
+        selectHelper: true,
+        dayClick: function(date) {
+            const dateStr = date.format('YYYY-MM-DD');
+            exibirSalasDisponiveis(dateStr);
+        },
+        editable: true,
+        eventLimit: true
     });
 }
 
@@ -22,7 +32,7 @@ function exibirSalasDisponiveis(dateStr) {
     const salas = carregarDados('salas');
     const agendamentos = carregarDados('agendamentos');
     const salasDisponiveisEl = document.getElementById('salaDisponiveis');
-    salasDisponiveisEl.innerHTML = `<h3 class="mt-4">Salas disponíveis em ${dateStr}</h3>`;
+    salasDisponiveisEl.innerHTML = `<h2 class="mt-4">Salas disponíveis em ${dateStr}</h2>`;
 
     salas.forEach(sala => {
         const isDisponivel = !agendamentos.some(agendamento => agendamento.sala === sala.nomeEspaco && agendamento.date === dateStr);
@@ -74,8 +84,14 @@ function agendarSala(sala, date) {
     exibirSalasDisponiveis(date); // Atualiza a lista de salas disponíveis
 }
 
+// Inicializa o calendário ao carregar a página
 document.addEventListener('DOMContentLoaded', function() {
-    inicializarCalendario();
+    if (document.getElementById('calendar')) {
+        inicializarCalendario();
+    }
+    if (document.getElementById('formCadastroSalas')) {
+        document.getElementById('formCadastroSalas').addEventListener('submit', cadastrarSala);
+    }
 });
 
 // Função para cadastrar sala
@@ -190,7 +206,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Atualiza a tabela ao carregar a página
     atualizarTabelaSalas();
-    inicializarCalendario(); // Inicializa o calendário ao carregar a página
 });
 
 // Função para cadastrar usuário
