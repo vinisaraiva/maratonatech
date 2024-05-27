@@ -56,6 +56,7 @@ h1,h2,h3, .navbar-brand {
     height: auto;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+    border: none; /* Remove a borda das imagens */
 
 }
 
