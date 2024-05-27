@@ -32,7 +32,7 @@ function exibirSalasDisponiveis(dateStr) {
     const salas = carregarDados('salas');
     const agendamentos = carregarDados('agendamentos');
     const salasDisponiveisEl = document.getElementById('salaDisponiveis');
-    salasDisponiveisEl.innerHTML = `<h2 class="mt-4">Salas disponíveis em ${dateStr}</h2>`;
+    salasDisponiveisEl.innerHTML = `<h4 class="mt-4">Salas disponíveis em ${dateStr}</h4>`;
 
     salas.forEach(sala => {
         const isDisponivel = !agendamentos.some(agendamento => agendamento.sala === sala.nomeEspaco && agendamento.date === dateStr);
