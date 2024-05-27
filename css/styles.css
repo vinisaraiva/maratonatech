@@ -50,8 +50,7 @@ h1,h2,h3, .navbar-brand {
 .card-img-top {
     width: 100%;
     height: auto;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+
 }
 
 .fixed-top {
