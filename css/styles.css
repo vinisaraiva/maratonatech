@@ -47,6 +47,10 @@ h1,h2,h3, .navbar-brand {
     transform: scale(1.05);
 }
 
+.img-card {
+    border: none; /* Remove a borda das imagens */
+}
+
 .card-img-top {
     width: 100%;
     height: auto;
