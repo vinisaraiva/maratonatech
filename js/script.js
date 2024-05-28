@@ -70,7 +70,15 @@ function abrirPopupAgendamento(sala, valor, date, periodoMax) {
 
         const periodo = parseInt(periodoMax, 10);
         for (let hora = 7; hora <= 23; hora += periodo) {
-            const isAgendado = agendamentos.some(agendamento => agendamento.sala === sala && agendamento.date === date && agendamento.hora === hora);
+            const isAgendado = agendamentos.some(agendamento => {
+                const agendamentoInicio = agendamento.hora;
+                const agendamentoFim = parseInt(agendamento.hora) + parseInt(agendamento.periodo);
+                const horaFim = hora + periodo;
+                return agendamento.sala === sala && agendamento.date === date && (
+                    (hora >= agendamentoInicio && hora < agendamentoFim) ||
+                    (horaFim > agendamentoInicio && horaFim <= agendamentoFim)
+                );
+            });
             if (!isAgendado) {
                 horarioOptions += `<div class="form-check">
                     <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}">
