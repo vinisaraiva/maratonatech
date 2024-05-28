@@ -69,14 +69,7 @@ function abrirPopupAgendamento(sala, valor, date) {
 
         for (let hora = 7; hora <= 23; hora++) {
             const isAgendado = agendamentos.some(agendamento => agendamento.sala === sala && agendamento.date === date && agendamento.hora === hora);
-            if (isAgendado) {
-                horarioOptions += `<div class="form-check">
-                    <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}" disabled>
-                    <label class="form-check-label text-danger font-weight-bold" for="horario${hora}">
-                        ${hora}:00 - ${hora + 1}:00 <span class="text-danger">(Horário agendado)</span>
-                    </label>
-                </div>`;
-            } else {
+            if (!isAgendado) {
                 horarioOptions += `<div class="form-check">
                     <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}">
                     <label class="form-check-label" for="horario${hora}">
@@ -112,18 +105,111 @@ function abrirModalPagamento(sala, valor, date, horario) {
 
 // Função para agendar uma sala
 function agendarSala(sala, date, hora) {
+    const usuarioLogado = carregarDados('usuarioLogado');
     const agendamentos = carregarDados('agendamentos');
-    agendamentos.push({ sala, date, hora });
+    agendamentos.push({ sala, date, hora, usuario: usuarioLogado.nome });
     salvarDados('agendamentos', agendamentos);
     alert(`Sala ${sala} agendada para ${date} às ${hora}:00`);
     $('#pagamentoModal').modal('hide');
     exibirSalasDisponiveis(date); // Atualiza a lista de salas disponíveis
 }
 
-// Inicializa o calendário ao carregar a página
+// Função para inicializar a página de salas agendadas
+function inicializarSalasAgendadas() {
+    const agendamentos = carregarDados('agendamentos');
+    const listaSalasAgendadasEl = document.getElementById('listaSalasAgendadas');
+    listaSalasAgendadasEl.innerHTML = '';
+
+    agendamentos.forEach((agendamento, index) => {
+        const agendamentoEl = document.createElement('div');
+        agendamentoEl.className = 'card mb-2';
+        agendamentoEl.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title">${agendamento.sala}</h5>
+                <p class="card-text">Data: ${agendamento.date}</p>
+                <p class="card-text">Hora: ${agendamento.hora}:00</p>
+                <p class="card-text">Usuário: ${agendamento.usuario}</p>
+                <button class="btn btn-warning btn-sm edit-agendamento-btn" data-index="${index}">Editar</button>
+                <button class="btn btn-danger btn-sm delete-agendamento-btn" data-index="${index}">Excluir</button>
+            </div>
+        `;
+        listaSalasAgendadasEl.appendChild(agendamentoEl);
+    });
+
+    // Adiciona eventos de clique para os botões de editar e excluir
+    document.querySelectorAll('.edit-agendamento-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            editarAgendamento(index);
+        });
+    });
+
+    document.querySelectorAll('.delete-agendamento-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            excluirAgendamento(index);
+        });
+    });
+}
+
+// Função para editar agendamento
+function editarAgendamento(index) {
+    const agendamentos = carregarDados('agendamentos');
+    const agendamento = agendamentos[index];
+
+    document.getElementById('editSala').value = agendamento.sala;
+    document.getElementById('editData').value = agendamento.date;
+    document.getElementById('editHora').value = agendamento.hora;
+    document.getElementById('editIndex').value = index;
+
+    $('#editAgendamentoModal').modal('show');
+}
+
+// Função para excluir agendamento
+function excluirAgendamento(index) {
+    const confirmDeleteAgendamento = document.getElementById('confirmDeleteAgendamento');
+    if (confirmDeleteAgendamento) {
+        confirmDeleteAgendamento.setAttribute('data-index', index);
+        $('#deleteAgendamentoModal').modal('show');
+    }
+}
+
+// Função para salvar as alterações da edição de agendamento
 document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('calendar')) {
-        inicializarCalendario();
+    const formEditarAgendamento = document.getElementById('formEditarAgendamento');
+    if (formEditarAgendamento) {
+        formEditarAgendamento.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const index = document.getElementById('editIndex').value;
+            const agendamentos = carregarDados('agendamentos');
+
+            agendamentos[index].date = document.getElementById('editData').value;
+            agendamentos[index].hora = document.getElementById('editHora').value;
+
+            salvarDados('agendamentos', agendamentos);
+            $('#editAgendamentoModal').modal('hide');
+            alert('Agendamento editado com sucesso!');
+            inicializarSalasAgendadas(); // Atualiza a lista após a edição
+        });
+    }
+
+    const confirmDeleteAgendamento = document.getElementById('confirmDeleteAgendamento');
+    if (confirmDeleteAgendamento) {
+        confirmDeleteAgendamento.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            const agendamentos = carregarDados('agendamentos');
+            agendamentos.splice(index, 1);
+
+            salvarDados('agendamentos', agendamentos);
+            $('#deleteAgendamentoModal').modal('hide');
+            alert('Agendamento excluído com sucesso!');
+            inicializarSalasAgendadas(); // Atualiza a lista após a exclusão
+        });
+    }
+
+    // Inicializa a página de salas agendadas ao carregar a página
+    if (document.getElementById('listaSalasAgendadas')) {
+        inicializarSalasAgendadas();
     }
 });
 
