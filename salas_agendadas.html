@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Salas Agendadas</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">CoWorking</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login/Cadastro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cadastro_salas.html">Cadastro de Salas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="agendamento.html">Agendamento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="salas_agendadas.html">Salas Agendadas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="equipe.html">Equipe</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-5 pt-5">
+        <h1 class="text-center my-5">Salas Agendadas</h1>
+        <div id="listaSalasAgendadas" class="mt-4"></div>
+    </div>
+
+    <!-- Modal de Edição de Agendamento -->
+    <div class="modal fade" id="editAgendamentoModal" tabindex="-1" role="dialog" aria-labelledby="editAgendamentoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAgendamentoModalLabel">Editar Agendamento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarAgendamento">
+                        <div class="form-group">
+                            <label for="editSala">Sala</label>
+                            <input type="text" class="form-control" id="editSala" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="editData">Data</label>
+                            <input type="date" class="form-control" id="editData" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHora">Hora</label>
+                            <input type="time" class="form-control" id="editHora" required>
+                        </div>
+                        <input type="hidden" id="editIndex">
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Exclusão de Agendamento -->
+    <div class="modal fade" id="deleteAgendamentoModal" tabindex="-1" role="dialog" aria-labelledby="deleteAgendamentoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteAgendamentoModalLabel">Excluir Agendamento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Você tem certeza que deseja excluir este agendamento?</p>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteAgendamento">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
