@@ -32,23 +32,36 @@ function exibirSalasDisponiveis(dateStr) {
     const salas = carregarDados('salas');
     const agendamentos = carregarDados('agendamentos');
     const salasDisponiveisEl = document.getElementById('salaDisponiveis');
-    salasDisponiveisEl.innerHTML = `<h4 class="mt-4">Salas disponíveis em ${dateStr}</h4>`;
+    salasDisponiveisEl.innerHTML = `<h2 class="mt-4">Salas disponíveis em ${dateStr}</h2>`;
 
     salas.forEach(sala => {
-        const isDisponivel = !agendamentos.some(agendamento => agendamento.sala === sala.nomeEspaco && agendamento.date === dateStr);
-        if (isDisponivel) {
-            const salaEl = document.createElement('div');
-            salaEl.className = 'card mb-2';
-            salaEl.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">${sala.nomeEspaco}</h5>
-                    <p class="card-text">${sala.estrutura}</p>
-                    <p class="card-text"><strong>Valor: R$ ${sala.valor}</strong></p>
-                    <button class="btn btn-primary agendar-btn" data-sala="${sala.nomeEspaco}" data-valor="${sala.valor}" data-date="${dateStr}">Agendar</button>
-                </div>
-            `;
-            salasDisponiveisEl.appendChild(salaEl);
+        const horariosDisponiveis = [];
+        const periodoMax = parseInt(sala.periodoMax);
+
+        for (let hora = 7; hora <= 23 - periodoMax + 1; hora++) {
+            let disponivel = true;
+            for (let p = 0; p < periodoMax; p++) {
+                if (agendamentos.some(agendamento => agendamento.sala === sala.nomeEspaco && agendamento.date === dateStr && agendamento.hora === (hora + p))) {
+                    disponivel = false;
+                    break;
+                }
+            }
+            if (disponivel) {
+                horariosDisponiveis.push(hora);
+            }
         }
+
+        const salaEl = document.createElement('div');
+        salaEl.className = 'card mb-2';
+        salaEl.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title">${sala.nomeEspaco}</h5>
+                <p class="card-text">${sala.estrutura}</p>
+                <p class="card-text"><strong>Valor: R$ ${sala.valor}</strong></p>
+                <button class="btn btn-primary agendar-btn" data-sala="${sala.nomeEspaco}" data-valor="${sala.valor}" data-date="${dateStr}" data-horarios='${JSON.stringify(horariosDisponiveis)}'>Agendar</button>
+            </div>
+        `;
+        salasDisponiveisEl.appendChild(salaEl);
     });
 
     // Adiciona evento de clique para os botões de agendamento
@@ -57,29 +70,46 @@ function exibirSalasDisponiveis(dateStr) {
             const sala = this.getAttribute('data-sala');
             const valor = this.getAttribute('data-valor');
             const date = this.getAttribute('data-date');
-            abrirPopupAgendamento(sala, valor, date);
+            const horariosDisponiveis = JSON.parse(this.getAttribute('data-horarios'));
+            abrirPopupAgendamento(sala, valor, date, horariosDisponiveis);
         });
     });
 }
 
 // Função para abrir o popup de confirmação de agendamento
-function abrirPopupAgendamento(sala, valor, date) {
+function abrirPopupAgendamento(sala, valor, date, horariosDisponiveis) {
     const agendarInfo = document.getElementById('agendarInfo');
     if (agendarInfo) {
-        agendarInfo.innerHTML = `Nome da Sala: ${sala}<br>Valor: R$ ${valor}<br>Data: ${date}`;
+        let horarioOptions = '';
+        horariosDisponiveis.forEach(hora => {
+            horarioOptions += `<div class="form-check">
+                <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}">
+                <label class="form-check-label" for="horario${hora}">
+                    ${hora}:00 - ${hora + 1}:00
+                </label>
+            </div>`;
+        });
+
+        agendarInfo.innerHTML = `Nome da Sala: ${sala}<br>Valor: R$ ${valor}<br>Data: ${date}<br><br>
+            <h5>Horários Disponíveis:</h5>${horarioOptions}`;
         $('#agendarModal').modal('show');
         document.getElementById('confirmAgendar').onclick = function() {
-            agendarSala(sala, date);
+            const horarioSelecionado = document.querySelector('input[name="horario"]:checked').value;
+            if (horarioSelecionado) {
+                agendarSala(sala, date, horarioSelecionado);
+            } else {
+                alert('Por favor, selecione um horário.');
+            }
         };
     }
 }
 
 // Função para agendar uma sala
-function agendarSala(sala, date) {
+function agendarSala(sala, date, hora) {
     const agendamentos = carregarDados('agendamentos');
-    agendamentos.push({ sala, date });
+    agendamentos.push({ sala, date, hora });
     salvarDados('agendamentos', agendamentos);
-    alert(`Sala ${sala} agendada para ${date}`);
+    alert(`Sala ${sala} agendada para ${date} às ${hora}:00`);
     $('#agendarModal').modal('hide');
     exibirSalasDisponiveis(date); // Atualiza a lista de salas disponíveis
 }
@@ -100,7 +130,8 @@ function cadastrarSala(event) {
     const sala = {
         nomeEspaco: document.getElementById('nomeEspaco').value,
         estrutura: document.getElementById('estrutura').value,
-        valor: document.getElementById('valor').value
+        valor: document.getElementById('valor').value,
+        periodoMax: document.getElementById('periodoMax').value
     };
     const salas = carregarDados('salas');
     salas.push(sala);
@@ -124,6 +155,7 @@ function atualizarTabelaSalas() {
             <td>${sala.nomeEspaco}</td>
             <td>${sala.estrutura}</td>
             <td>R$ ${sala.valor}</td>
+            <td>${sala.periodoMax} horas</td>
             <td>
                 <button class="btn btn-warning btn-sm edit-btn" data-index="${index}">Editar</button>
                 <button class="btn btn-danger btn-sm delete-btn" data-index="${index}">Excluir</button>
@@ -156,6 +188,7 @@ function editarSala(index) {
     document.getElementById('editNomeEspaco').value = sala.nomeEspaco;
     document.getElementById('editEstrutura').value = sala.estrutura;
     document.getElementById('editValor').value = sala.valor;
+    document.getElementById('editPeriodoMax').value = sala.periodoMax;
     document.getElementById('editIndex').value = index;
 
     $('#editModal').modal('show');
@@ -182,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
             salas[index].nomeEspaco = document.getElementById('editNomeEspaco').value;
             salas[index].estrutura = document.getElementById('editEstrutura').value;
             salas[index].valor = document.getElementById('editValor').value;
+            salas[index].periodoMax = document.getElementById('editPeriodoMax').value;
 
             salvarDados('salas', salas);
             $('#editModal').modal('hide');
