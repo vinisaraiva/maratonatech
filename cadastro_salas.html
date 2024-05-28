@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CRPME - Cadastro de Salas</title>
+    <title>Cadastro de Salas</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -50,6 +50,10 @@
                 <label for="valor">Valor</label>
                 <input type="text" class="form-control" id="valor" required>
             </div>
+            <div class="form-group">
+                <label for="periodoMax">Período Máximo de Agendamento (Horas)</label>
+                <input type="number" class="form-control" id="periodoMax" min="1" max="12" required>
+            </div>
             <button type="submit" class="btn btn-primary">Cadastrar Sala</button>
         </form>
 
@@ -60,6 +64,7 @@
                     <th>Nome do Espaço</th>
                     <th>Estrutura</th>
                     <th>Valor</th>
+                    <th>Período Máximo</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -90,6 +95,10 @@
                         <div class="form-group">
                             <label for="editValor">Valor</label>
                             <input type="text" class="form-control" id="editValor" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPeriodoMax">Período Máximo de Agendamento (Horas)</label>
+                            <input type="number" class="form-control" id="editPeriodoMax" min="1" max="12" required>
                         </div>
                         <input type="hidden" id="editIndex">
                         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
