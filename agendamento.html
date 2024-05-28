@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CRPME - Agendamento</title>
+    <title>Agendamento</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
     <link rel="stylesheet" href="css/styles.css">
@@ -11,7 +11,7 @@
 <body>
     <header class="fixed-top">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#"><img src="assets/logo.png"></a>
+            <a class="navbar-brand" href="#">CoWorking</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -40,9 +40,9 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card mb-4">
-                    <img src="assets/coworking.png" class="card-img-top rounded img-coworking" alt="Coworking">
+                    <img src="assets/coworking.jpg" class="card-img-top rounded img-coworking" alt="Coworking">
                 </div>
-                <h3 class="text-center my-5">Agendamento de Salas</h3>
+                <h1 class="text-center my-5">Agendamento de Salas</h1>
                 <div id="calendar"></div>
                 <div id="salaDisponiveis" class="mt-4"></div>
             </div>
@@ -61,7 +61,27 @@
                 </div>
                 <div class="modal-body">
                     <p id="agendarInfo"></p>
+                    <div id="horariosDisponiveis"></div>
                     <button type="button" class="btn btn-primary" id="confirmAgendar">Ir para Pagamento</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Pagamento -->
+    <div class="modal fade" id="pagamentoModal" tabindex="-1" role="dialog" aria-labelledby="pagamentoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pagamentoModalLabel">Confirmar Pagamento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Deseja confirmar o pagamento e agendamento?</p>
+                    <button type="button" class="btn btn-primary" id="confirmarPagamento">Confirmar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
