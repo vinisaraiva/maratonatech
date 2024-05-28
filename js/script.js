@@ -42,7 +42,7 @@ function exibirSalasDisponiveis(dateStr) {
                 <h5 class="card-title">${sala.nomeEspaco}</h5>
                 <p class="card-text">${sala.estrutura}</p>
                 <p class="card-text"><strong>Valor: R$ ${sala.valor}</strong></p>
-                <button class="btn btn-primary agendar-btn" data-sala="${sala.nomeEspaco}" data-valor="${sala.valor}" data-date="${dateStr}">Agendar</button>
+                <button class="btn btn-primary agendar-btn" data-sala="${sala.nomeEspaco}" data-valor="${sala.valor}" data-date="${dateStr}" data-periodo-max="${sala.periodoMax}">Agendar</button>
             </div>
         `;
         salasDisponiveisEl.appendChild(salaEl);
@@ -54,26 +54,28 @@ function exibirSalasDisponiveis(dateStr) {
             const sala = this.getAttribute('data-sala');
             const valor = this.getAttribute('data-valor');
             const date = this.getAttribute('data-date');
-            abrirPopupAgendamento(sala, valor, date);
+            const periodoMax = this.getAttribute('data-periodo-max');
+            abrirPopupAgendamento(sala, valor, date, periodoMax);
         });
     });
 }
 
 // Função para abrir o popup de confirmação de agendamento
-function abrirPopupAgendamento(sala, valor, date) {
+function abrirPopupAgendamento(sala, valor, date, periodoMax) {
     const agendarInfo = document.getElementById('agendarInfo');
     const horariosDisponiveisEl = document.getElementById('horariosDisponiveis');
     if (agendarInfo && horariosDisponiveisEl) {
         let horarioOptions = '';
         const agendamentos = carregarDados('agendamentos');
 
-        for (let hora = 7; hora <= 23; hora++) {
+        const periodo = parseInt(periodoMax, 10);
+        for (let hora = 7; hora <= 23; hora += periodo) {
             const isAgendado = agendamentos.some(agendamento => agendamento.sala === sala && agendamento.date === date && agendamento.hora === hora);
             if (!isAgendado) {
                 horarioOptions += `<div class="form-check">
                     <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}">
                     <label class="form-check-label" for="horario${hora}">
-                        ${hora}:00 - ${hora + 1}:00
+                        ${hora}:00 - ${hora + periodo}:00
                     </label>
                 </div>`;
             }
@@ -379,5 +381,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (formLogin) {
         formLogin.addEventListener('submit', logarUsuario);
+    }
+
+    // Inicializa o calendário ao carregar a página
+    if (document.getElementById('calendar')) {
+        inicializarCalendario();
     }
 });
