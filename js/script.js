@@ -79,29 +79,52 @@ function exibirSalasDisponiveis(dateStr) {
 // Função para abrir o popup de confirmação de agendamento
 function abrirPopupAgendamento(sala, valor, date, horariosDisponiveis) {
     const agendarInfo = document.getElementById('agendarInfo');
-    if (agendarInfo) {
+    const horariosDisponiveisEl = document.getElementById('horariosDisponiveis');
+    if (agendarInfo && horariosDisponiveisEl) {
         let horarioOptions = '';
-        horariosDisponiveis.forEach(hora => {
-            horarioOptions += `<div class="form-check">
-                <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}">
-                <label class="form-check-label" for="horario${hora}">
-                    ${hora}:00 - ${hora + 1}:00
-                </label>
-            </div>`;
-        });
+        const agendamentos = carregarDados('agendamentos');
 
-        agendarInfo.innerHTML = `Nome da Sala: ${sala}<br>Valor: R$ ${valor}<br>Data: ${date}<br><br>
-            <h5>Horários Disponíveis:</h5>${horarioOptions}`;
+        for (let hora = 7; hora <= 23; hora++) {
+            const isAgendado = agendamentos.some(agendamento => agendamento.sala === sala && agendamento.date === date && agendamento.hora === hora);
+            if (isAgendado) {
+                horarioOptions += `<div class="form-check">
+                    <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}" disabled>
+                    <label class="form-check-label text-danger font-weight-bold" for="horario${hora}">
+                        ${hora}:00 - ${hora + 1}:00 <span class="text-danger">(Horário agendado)</span>
+                    </label>
+                </div>`;
+            } else {
+                horarioOptions += `<div class="form-check">
+                    <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}">
+                    <label class="form-check-label" for="horario${hora}">
+                        ${hora}:00 - ${hora + 1}:00
+                    </label>
+                </div>`;
+            }
+        }
+
+        agendarInfo.innerHTML = `Nome da Sala: ${sala}<br>Valor: R$ ${valor}<br>Data: ${date}`;
+        horariosDisponiveisEl.innerHTML = `<h5>Horários Disponíveis:</h5>${horarioOptions}`;
         $('#agendarModal').modal('show');
+
         document.getElementById('confirmAgendar').onclick = function() {
             const horarioSelecionado = document.querySelector('input[name="horario"]:checked').value;
             if (horarioSelecionado) {
-                agendarSala(sala, date, horarioSelecionado);
+                $('#agendarModal').modal('hide');
+                abrirModalPagamento(sala, valor, date, horarioSelecionado);
             } else {
                 alert('Por favor, selecione um horário.');
             }
         };
     }
+}
+
+// Função para abrir o modal de pagamento
+function abrirModalPagamento(sala, valor, date, horario) {
+    $('#pagamentoModal').modal('show');
+    document.getElementById('confirmarPagamento').onclick = function() {
+        agendarSala(sala, date, horario);
+    };
 }
 
 // Função para agendar uma sala
@@ -110,7 +133,7 @@ function agendarSala(sala, date, hora) {
     agendamentos.push({ sala, date, hora });
     salvarDados('agendamentos', agendamentos);
     alert(`Sala ${sala} agendada para ${date} às ${hora}:00`);
-    $('#agendarModal').modal('hide');
+    $('#pagamentoModal').modal('hide');
     exibirSalasDisponiveis(date); // Atualiza a lista de salas disponíveis
 }
 
@@ -118,9 +141,6 @@ function agendarSala(sala, date, hora) {
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('calendar')) {
         inicializarCalendario();
-    }
-    if (document.getElementById('formCadastroSalas')) {
-        document.getElementById('formCadastroSalas').addEventListener('submit', cadastrarSala);
     }
 });
 
