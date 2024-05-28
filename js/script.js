@@ -35,22 +35,6 @@ function exibirSalasDisponiveis(dateStr) {
     salasDisponiveisEl.innerHTML = `<h2 class="mt-4">Salas disponíveis em ${dateStr}</h2>`;
 
     salas.forEach(sala => {
-        const horariosDisponiveis = [];
-        const periodoMax = parseInt(sala.periodoMax);
-
-        for (let hora = 7; hora <= 23 - periodoMax + 1; hora++) {
-            let disponivel = true;
-            for (let p = 0; p < periodoMax; p++) {
-                if (agendamentos.some(agendamento => agendamento.sala === sala.nomeEspaco && agendamento.date === dateStr && agendamento.hora === (hora + p))) {
-                    disponivel = false;
-                    break;
-                }
-            }
-            if (disponivel) {
-                horariosDisponiveis.push(hora);
-            }
-        }
-
         const salaEl = document.createElement('div');
         salaEl.className = 'card mb-2';
         salaEl.innerHTML = `
@@ -58,7 +42,7 @@ function exibirSalasDisponiveis(dateStr) {
                 <h5 class="card-title">${sala.nomeEspaco}</h5>
                 <p class="card-text">${sala.estrutura}</p>
                 <p class="card-text"><strong>Valor: R$ ${sala.valor}</strong></p>
-                <button class="btn btn-primary agendar-btn" data-sala="${sala.nomeEspaco}" data-valor="${sala.valor}" data-date="${dateStr}" data-horarios='${JSON.stringify(horariosDisponiveis)}'>Agendar</button>
+                <button class="btn btn-primary agendar-btn" data-sala="${sala.nomeEspaco}" data-valor="${sala.valor}" data-date="${dateStr}">Agendar</button>
             </div>
         `;
         salasDisponiveisEl.appendChild(salaEl);
@@ -70,14 +54,13 @@ function exibirSalasDisponiveis(dateStr) {
             const sala = this.getAttribute('data-sala');
             const valor = this.getAttribute('data-valor');
             const date = this.getAttribute('data-date');
-            const horariosDisponiveis = JSON.parse(this.getAttribute('data-horarios'));
-            abrirPopupAgendamento(sala, valor, date, horariosDisponiveis);
+            abrirPopupAgendamento(sala, valor, date);
         });
     });
 }
 
 // Função para abrir o popup de confirmação de agendamento
-function abrirPopupAgendamento(sala, valor, date, horariosDisponiveis) {
+function abrirPopupAgendamento(sala, valor, date) {
     const agendarInfo = document.getElementById('agendarInfo');
     const horariosDisponiveisEl = document.getElementById('horariosDisponiveis');
     if (agendarInfo && horariosDisponiveisEl) {
