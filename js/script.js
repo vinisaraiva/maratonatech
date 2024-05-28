@@ -89,7 +89,7 @@ function abrirPopupAgendamento(sala, valor, date, periodoMax) {
             const horarioSelecionado = document.querySelector('input[name="horario"]:checked').value;
             if (horarioSelecionado) {
                 $('#agendarModal').modal('hide');
-                abrirModalPagamento(sala, valor, date, horarioSelecionado);
+                abrirModalPagamento(sala, valor, date, horarioSelecionado, periodoMax);
             } else {
                 alert('Por favor, selecione um horário.');
             }
@@ -98,20 +98,20 @@ function abrirPopupAgendamento(sala, valor, date, periodoMax) {
 }
 
 // Função para abrir o modal de pagamento
-function abrirModalPagamento(sala, valor, date, horario) {
+function abrirModalPagamento(sala, valor, date, horario, periodoMax) {
     $('#pagamentoModal').modal('show');
     document.getElementById('confirmarPagamento').onclick = function() {
-        agendarSala(sala, date, horario);
+        agendarSala(sala, date, horario, periodoMax);
     };
 }
 
 // Função para agendar uma sala
-function agendarSala(sala, date, hora) {
+function agendarSala(sala, date, hora, periodoMax) {
     const usuarioLogado = carregarDados('usuarioLogado');
     const agendamentos = carregarDados('agendamentos');
-    agendamentos.push({ sala, date, hora, usuario: usuarioLogado.nome });
+    agendamentos.push({ sala, date, hora, usuario: usuarioLogado.nome, periodo: periodoMax });
     salvarDados('agendamentos', agendamentos);
-    alert(`Sala ${sala} agendada para ${date} às ${hora}:00`);
+    alert(`Sala ${sala} agendada para ${date} das ${hora}:00 às ${parseInt(hora) + parseInt(periodoMax)}:00`);
     $('#pagamentoModal').modal('hide');
     exibirSalasDisponiveis(date); // Atualiza a lista de salas disponíveis
 }
@@ -129,7 +129,7 @@ function inicializarSalasAgendadas() {
             <div class="card-body">
                 <h5 class="card-title">${agendamento.sala}</h5>
                 <p class="card-text">Data: ${agendamento.date}</p>
-                <p class="card-text">Hora: ${agendamento.hora}:00</p>
+                <p class="card-text">Horário agendado: ${agendamento.hora}:00 às ${parseInt(agendamento.hora) + parseInt(agendamento.periodo)}:00</p>
                 <p class="card-text">Usuário: ${agendamento.usuario}</p>
                 <button class="btn btn-warning btn-sm edit-agendamento-btn" data-index="${index}">Editar</button>
                 <button class="btn btn-danger btn-sm delete-agendamento-btn" data-index="${index}">Excluir</button>
