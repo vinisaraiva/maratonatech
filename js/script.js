@@ -86,6 +86,13 @@ function abrirPopupAgendamento(sala, valor, date, periodoMax) {
                         ${hora}:00 - ${hora + periodo}:00
                     </label>
                 </div>`;
+            } else {
+                horarioOptions += `<div class="form-check">
+                    <input class="form-check-input" type="radio" name="horario" id="horario${hora}" value="${hora}" disabled>
+                    <label class="form-check-label text-danger" for="horario${hora}">
+                        ${hora}:00 - ${hora + periodo}:00 (Horário agendado)
+                    </label>
+                </div>`;
             }
         }
 
@@ -394,10 +401,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa o calendário ao carregar a página
     if (document.getElementById('calendar')) {
         inicializarCalendario();
-    }
-
-    // Atualiza a tabela ao carregar a página
-    if (document.getElementById('salasCadastradas')) {
-        atualizarTabelaSalas();
     }
 });
