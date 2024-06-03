@@ -11,7 +11,7 @@ function salvarDados(chave, dados) {
 // Função para verificar a sessão do usuário
 function verificarSessao() {
     const usuarioLogado = carregarDados('usuarioLogado');
-    if (!usuarioLogado.email) {
+    if (!usuarioLogado || !usuarioLogado.email) {
         window.location.href = 'login.html';
     }
 }
@@ -386,5 +386,71 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializa o calendário ao carregar a página
     if (document.getElementById('calendar')) {
         inicializarCalendario();
+    }
+});
+
+// Função para cadastrar usuário
+function cadastrarUsuario(event) {
+    event.preventDefault();
+    const usuario = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        telefone: document.getElementById('telefone').value,
+        areaAtuacao: document.getElementById('areaAtuacao').value,
+        estado: document.getElementById('estado').value,
+        cidade: document.getElementById('cidade').value,
+        senha: document.getElementById('senha').value,
+        admin: document.getElementById('admin').value
+    };
+    const usuarios = carregarDados('usuarios');
+    usuarios.push(usuario);
+    salvarDados('usuarios', usuarios);
+    alert('Usuário cadastrado com sucesso!');
+    document.getElementById('formCadastroUsuario').reset();
+}
+
+// Função para logar usuário
+function logarUsuario(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const senha = document.getElementById('loginSenha').value;
+    const usuarios = carregarDados('usuarios');
+    const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+
+    if (usuario) {
+        salvarDados('usuarioLogado', usuario);
+        alert('Login realizado com sucesso!');
+        window.location.href = 'index.html';
+    } else {
+        alert('Email ou senha incorretos!');
+    }
+}
+
+// Verificar se os formulários existem antes de adicionar os listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const formCadastroUsuario = document.getElementById('formCadastroUsuario');
+    const formLogin = document.getElementById('formLogin');
+
+    if (formCadastroUsuario) {
+        formCadastroUsuario.addEventListener('submit', cadastrarUsuario);
+    }
+
+    if (formLogin) {
+        formLogin.addEventListener('submit', logarUsuario);
+    }
+
+    // Inicializa o calendário ao carregar a página
+    if (document.getElementById('calendar')) {
+        inicializarCalendario();
+    }
+
+    // Atualiza a tabela ao carregar a página
+    if (document.getElementById('salasCadastradas')) {
+        atualizarTabelaSalas();
+    }
+
+    // Carrega a navbar e verifica permissões
+    if (document.getElementById('navbar-container')) {
+        carregarNavbar();
     }
 });
