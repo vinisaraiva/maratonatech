@@ -387,7 +387,171 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('calendar')) {
         inicializarCalendario();
     }
+
+    // Inicializa a página de perfil ao carregar a página
+    if (document.getElementById('formEditarPerfil')) {
+        inicializarPerfil();
+    }
 });
+
+// Função para inicializar a página de perfil
+function inicializarPerfil() {
+    const usuarioLogado = carregarDados('usuarioLogado');
+    document.getElementById('nome').value = usuarioLogado.nome;
+    document.getElementById('email').value = usuarioLogado.email;
+    document.getElementById('telefone').value = usuarioLogado.telefone;
+    document.getElementById('areaAtuacao').value = usuarioLogado.areaAtuacao;
+    document.getElementById('estado').value = usuarioLogado.estado;
+    document.getElementById('cidade').value = usuarioLogado.cidade;
+
+    const adminField = document.querySelector('.admin-field');
+    if (usuarioLogado.admin === 'S') {
+        document.getElementById('admin').value = usuarioLogado.admin;
+        adminField.style.display = 'block';
+        inicializarListaUsuarios();
+    } else {
+        adminField.style.display = 'none';
+    }
+
+    document.getElementById('formEditarPerfil').addEventListener('submit', function(event) {
+        event.preventDefault();
+        atualizarPerfil();
+    });
+}
+
+// Função para atualizar o perfil do usuário
+function atualizarPerfil() {
+    const usuarioLogado = carregarDados('usuarioLogado');
+    usuarioLogado.nome = document.getElementById('nome').value;
+    usuarioLogado.email = document.getElementById('email').value;
+    usuarioLogado.telefone = document.getElementById('telefone').value;
+    usuarioLogado.areaAtuacao = document.getElementById('areaAtuacao').value;
+    usuarioLogado.estado = document.getElementById('estado').value;
+    usuarioLogado.cidade = document.getElementById('cidade').value;
+
+    if (usuarioLogado.admin === 'S') {
+        usuarioLogado.admin = document.getElementById('admin').value;
+    }
+
+    let usuarios = carregarDados('usuarios');
+    const index = usuarios.findIndex(u => u.email === usuarioLogado.email);
+    if (index !== -1) {
+        usuarios[index] = usuarioLogado;
+    }
+
+    salvarDados('usuarios', usuarios);
+    salvarDados('usuarioLogado', usuarioLogado);
+    alert('Perfil atualizado com sucesso!');
+}
+
+// Função para inicializar a lista de usuários para administradores
+function inicializarListaUsuarios() {
+    const listaUsuariosEl = document.getElementById('listaUsuarios');
+    const listaUsuariosContainer = document.getElementById('listaUsuariosContainer');
+    listaUsuariosContainer.style.display = 'block';
+
+    const usuarios = carregarDados('usuarios');
+    listaUsuariosEl.innerHTML = '';
+
+    usuarios.forEach((usuario, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${usuario.nome}</td>
+            <td>${usuario.email}</td>
+            <td>${usuario.telefone}</td>
+            <td>${usuario.areaAtuacao}</td>
+            <td>${usuario.estado}</td>
+            <td>${usuario.cidade}</td>
+            <td>${usuario.admin === 'S' ? 'Sim' : 'Não'}</td>
+            <td>
+                <button class="btn btn-warning btn-sm edit-user-btn" data-index="${index}">Editar</button>
+                <button class="btn btn-danger btn-sm delete-user-btn" data-index="${index}">Excluir</button>
+            </td>
+        `;
+        listaUsuariosEl.appendChild(row);
+    });
+
+    // Adiciona eventos de clique para os botões de editar e excluir
+    document.querySelectorAll('.edit-user-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            editarUsuario(index);
+        });
+    });
+
+    document.querySelectorAll('.delete-user-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            excluirUsuario(index);
+        });
+    });
+}
+
+// Função para editar usuário
+function editarUsuario(index) {
+    const usuarios = carregarDados('usuarios');
+    const usuario = usuarios[index];
+
+    document.getElementById('editNome').value = usuario.nome;
+    document.getElementById('editEmail').value = usuario.email;
+    document.getElementById('editTelefone').value = usuario.telefone;
+    document.getElementById('editAreaAtuacao').value = usuario.areaAtuacao;
+    document.getElementById('editEstado').value = usuario.estado;
+    document.getElementById('editCidade').value = usuario.cidade;
+    document.getElementById('editAdmin').value = usuario.admin;
+    document.getElementById('editIndex').value = index;
+
+    $('#editUserModal').modal('show');
+}
+
+// Função para salvar as alterações da edição de usuário
+document.addEventListener('DOMContentLoaded', function() {
+    const formEditarUsuario = document.getElementById('formEditarUsuario');
+    if (formEditarUsuario) {
+        formEditarUsuario.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const index = document.getElementById('editIndex').value;
+            const usuarios = carregarDados('usuarios');
+
+            usuarios[index].nome = document.getElementById('editNome').value;
+            usuarios[index].email = document.getElementById('editEmail').value;
+            usuarios[index].telefone = document.getElementById('editTelefone').value;
+            usuarios[index].areaAtuacao = document.getElementById('editAreaAtuacao').value;
+            usuarios[index].estado = document.getElementById('editEstado').value;
+            usuarios[index].cidade = document.getElementById('editCidade').value;
+            usuarios[index].admin = document.getElementById('editAdmin').value;
+
+            salvarDados('usuarios', usuarios);
+            $('#editUserModal').modal('hide');
+            alert('Usuário editado com sucesso!');
+            inicializarListaUsuarios(); // Atualiza a lista após a edição
+        });
+    }
+
+    const confirmDeleteUser = document.getElementById('confirmDeleteUser');
+    if (confirmDeleteUser) {
+        confirmDeleteUser.addEventListener('click', function() {
+            const index = document.getElementById('deleteIndex').value;
+            const usuarios = carregarDados('usuarios');
+            usuarios.splice(index, 1);
+
+            salvarDados('usuarios', usuarios);
+            $('#deleteUserModal').modal('hide');
+            alert('Usuário excluído com sucesso!');
+            inicializarListaUsuarios(); // Atualiza a lista após a exclusão
+        });
+    }
+});
+
+// Função para excluir usuário
+function excluirUsuario(index) {
+    const confirmDeleteUser = document.getElementById('confirmDeleteUser');
+    if (confirmDeleteUser) {
+        confirmDeleteUser.setAttribute('data-index', index);
+        document.getElementById('deleteIndex').value = index;
+        $('#deleteUserModal').modal('show');
+    }
+}
 
 // Função para cadastrar usuário
 function cadastrarUsuario(event) {
@@ -472,5 +636,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carrega a navbar e verifica permissões
     if (document.getElementById('navbar-container')) {
         carregarNavbar();
+    }
+
+    // Inicializa a página de perfil ao carregar a página
+    if (document.getElementById('formEditarPerfil')) {
+        inicializarPerfil();
     }
 });
