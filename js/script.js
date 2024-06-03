@@ -1,12 +1,50 @@
+// Função para carregar os dados do Local Storage
+function carregarDados(chave) {
+    return JSON.parse(localStorage.getItem(chave)) || [];
+}
+
 // Função para salvar os dados no Local Storage
 function salvarDados(chave, dados) {
     localStorage.setItem(chave, JSON.stringify(dados));
 }
 
-// Função para carregar os dados do Local Storage
-function carregarDados(chave) {
-    return JSON.parse(localStorage.getItem(chave)) || [];
+// Função para verificar a sessão do usuário
+function verificarSessao() {
+    const usuarioLogado = carregarDados('usuarioLogado');
+    if (!usuarioLogado.email) {
+        window.location.href = 'login.html';
+    }
 }
+
+// Função para carregar a navbar e verificar permissões
+function carregarNavbar() {
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbar-container').innerHTML = data;
+            const usuarioLogado = carregarDados('usuarioLogado');
+            if (usuarioLogado.admin !== 'S') {
+                document.querySelectorAll('.admin-only').forEach(el => el.remove());
+            }
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'login.html';
+            });
+        });
+}
+
+// Verificação de sessão em todas as páginas (exceto login e splash)
+document.addEventListener('DOMContentLoaded', function() {
+    if (!['login.html', 'splash.html'].some(page => window.location.pathname.endsWith(page))) {
+        verificarSessao();
+        carregarNavbar();
+    } else {
+        if (document.getElementById('navbar-container')) {
+            carregarNavbar();
+        }
+    }
+});
+
 
 // Função para inicializar o calendário
 function inicializarCalendario() {
