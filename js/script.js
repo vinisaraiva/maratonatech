@@ -395,4 +395,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('calendar')) {
         inicializarCalendario();
     }
+
+    // Atualiza a tabela ao carregar a página
+    if (document.getElementById('salasCadastradas')) {
+        atualizarTabelaSalas();
+    }
 });
