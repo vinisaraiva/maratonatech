@@ -426,10 +426,14 @@ function logarUsuario(event) {
     }
 }
 
-// Verificar se os formulários existem antes de adicionar os listeners
+// Mostrar e esconder formulários de login e cadastro
 document.addEventListener('DOMContentLoaded', function() {
     const formCadastroUsuario = document.getElementById('formCadastroUsuario');
     const formLogin = document.getElementById('formLogin');
+    const showRegister = document.getElementById('show-register');
+    const showLogin = document.getElementById('show-login');
+    const loginContainer = document.getElementById('login-container');
+    const registerContainer = document.getElementById('register-container');
 
     if (formCadastroUsuario) {
         formCadastroUsuario.addEventListener('submit', cadastrarUsuario);
@@ -437,6 +441,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (formLogin) {
         formLogin.addEventListener('submit', logarUsuario);
+    }
+
+    if (showRegister) {
+        showRegister.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginContainer.style.display = 'none';
+            registerContainer.style.display = 'block';
+        });
+    }
+
+    if (showLogin) {
+        showLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            registerContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+        });
     }
 
     // Inicializa o calendário ao carregar a página
