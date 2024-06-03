@@ -10,7 +10,7 @@
 <body>
     <header class="fixed-top">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#"><img src="assets/logo.png"></a>
+            <a class="navbar-brand" href="#">CoWorking</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -28,7 +28,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="agendamento.html">Agendamento</a>
                     </li>
-                      <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="salas_agendadas.html">Salas Agendadas</a>
                     </li>
                     <li class="nav-item">
@@ -40,28 +40,28 @@
     </header>
     <div class="container mt-5 pt-5">
         <h1 class="text-center my-5">Cadastro de Salas</h1>
-        <form id="formCadastroSalas" class="mb-5">
+        <form id="formCadastroSalas">
             <div class="form-group">
                 <label for="nomeEspaco">Nome do Espaço</label>
                 <input type="text" class="form-control" id="nomeEspaco" required>
             </div>
             <div class="form-group">
-                <label for="estrutura">Estrutura Oferecida</label>
+                <label for="estrutura">Estrutura</label>
                 <input type="text" class="form-control" id="estrutura" required>
             </div>
             <div class="form-group">
                 <label for="valor">Valor</label>
-                <input type="text" class="form-control" id="valor" required>
+                <input type="number" class="form-control" id="valor" required>
             </div>
             <div class="form-group">
-                <label for="periodoMax">Período Máximo de Agendamento (Horas)</label>
-                <input type="number" class="form-control" id="periodoMax" min="1" max="12" required>
+                <label for="periodoMax">Período Máximo de Agendamento (horas)</label>
+                <input type="number" class="form-control" id="periodoMax" required>
             </div>
-            <button type="submit" class="btn btn-primary">Cadastrar Sala</button>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
         </form>
 
-        <h2 class="mb-4">Salas Cadastradas</h2>
-        <table class="table table-striped">
+        <h2 class="text-center my-5">Salas Cadastradas</h2>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Nome do Espaço</th>
@@ -75,7 +75,7 @@
         </table>
     </div>
 
-    <!-- Modal de Edição -->
+    <!-- Modal de Edição de Sala -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -92,16 +92,16 @@
                             <input type="text" class="form-control" id="editNomeEspaco" required>
                         </div>
                         <div class="form-group">
-                            <label for="editEstrutura">Estrutura Oferecida</label>
+                            <label for="editEstrutura">Estrutura</label>
                             <input type="text" class="form-control" id="editEstrutura" required>
                         </div>
                         <div class="form-group">
                             <label for="editValor">Valor</label>
-                            <input type="text" class="form-control" id="editValor" required>
+                            <input type="number" class="form-control" id="editValor" required>
                         </div>
                         <div class="form-group">
-                            <label for="editPeriodoMax">Período Máximo de Agendamento (Horas)</label>
-                            <input type="number" class="form-control" id="editPeriodoMax" min="1" max="12" required>
+                            <label for="editPeriodoMax">Período Máximo de Agendamento (horas)</label>
+                            <input type="number" class="form-control" id="editPeriodoMax" required>
                         </div>
                         <input type="hidden" id="editIndex">
                         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <!-- Modal de Exclusão -->
+    <!-- Modal de Exclusão de Sala -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
