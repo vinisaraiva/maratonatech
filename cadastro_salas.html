@@ -9,6 +9,15 @@
 </head>
 <body>
     <div id="navbar-container"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                });
+        });
+    </script>
     <div class="container mt-5 pt-5">
         <h1 class="text-center my-5">Cadastro de Salas</h1>
         <form id="formCadastroSalas">
